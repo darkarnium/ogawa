@@ -1,7 +1,7 @@
 ---
 logging:
   name: 'ogawa'
-  path: 'PATH'
+  path: '/opt/ogawa/logs/'
 
 workers:
   polling:
@@ -11,6 +11,6 @@ workers:
 bus:
   region: 'us-west-2'
   input:
-    queue: 'URL'
+    queue: 'https://sqs.us-west-2.amazonaws.com/...'
   output:
-    elasticsearch: 'URL'
+    elasticsearch: 'http://127.0.0.1:9200/sesshu'
