@@ -1,0 +1,16 @@
+---
+logging:
+  name: 'ogawa'
+  path: 'PATH'
+
+workers:
+  polling:
+    interval: 20
+  count: 4
+
+bus:
+  region: 'us-west-2'
+  input:
+    queue: 'URL'
+  output:
+    elasticsearch: 'URL'
