@@ -14,4 +14,4 @@ bus:
   input:
     queue: 'https://sqs.us-west-2.amazonaws.com/...'
   output:
-    elasticsearch: 'http://127.0.0.1:9200/sesshu'
+    elasticsearch: 'http://127.0.0.1:9200/sesshu/capture/'

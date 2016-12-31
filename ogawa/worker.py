@@ -57,11 +57,8 @@ def run(configuration):
             # Dispatch the result into ElasticSearch.
             try:
                 result = requests.post(
-                    '{}/{}'.format(
-                        configuration['bus']['output']['elasticsearch'],
-                        work['plugin']
-                    ),
-                    json={'target': work['target'], 'result': work['result']}
+                    configuration['bus']['output']['elasticsearch'],
+                    json=work
                 )
             except requests.exceptions.HTTPError as x:
                 log.error(
