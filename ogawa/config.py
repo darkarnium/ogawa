@@ -25,6 +25,7 @@ SCHEMA = {
         'type': 'dict',
         'schema': {
             'region': {'type': 'string'},
+            'validation': {'type': 'boolean'},
             'input': {
                 'type': 'dict',
                 'schema': {

@@ -46,9 +46,12 @@ def run(configuration):
             try:
                 body = json.loads(messages[i]['Body'])
                 work = json.loads(body['Message'])
-                message.validate_response(work)
+
+                # Validate the message, if configured.
+                if configuration['bus']['validation']:
+                    message.validate_response(work)
             except (ValueError, AttributeError) as e:
-                log.warn('[{}] deleting malformed message: {}'.format(mid, e))
+                log.warn('[{}] skipping malformed message: {}'.format(mid, e))
                 continue
 
             # Dispatch the result into ElasticSearch.

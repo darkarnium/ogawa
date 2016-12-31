@@ -21,6 +21,12 @@ Once these modules are installed, a valid configuration file is required. See th
 
 The configuration for Ogawa is performed via a YAML document - named `ogawa.yaml` by default. An example configuration ships with Ogawa and is named `ogawa.dist.yaml`.
 
+## Validation
+
+By default, Ogawa will validate that the received message body matches the schema defined in `ogawa/config.py`. However, this can be disabled via the boolean configuration flag `bus.validation` inside of `ogawa.yaml`.
+
+Be advised that in the event of a validation error, Ogawa will simply 'skip' the message and log the error without deleting it. This will cause the message to be re-queued after any applicable AWS SQS visibility timeout. In order to prevent perpetual receive loops due to validation errors, a dead letter queue should be configured in SQS after a sane number of failed deliveries.
+
 ### AWS API
 
 Currently, Ogawa assumes that `boto3` is able to enumerate credentials to access the configured SNS and SQS resources without intervention. This may be via `~/.aws/credentials` file, IAM Instance Profiles (recommended), environment variables, or otherwise. This is done to encourage the use of IAM Instance Profiles, rather than generating AWS access keys and placing them into unencrypted text files.
