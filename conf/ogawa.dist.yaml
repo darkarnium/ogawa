@@ -10,6 +10,7 @@ workers:
 
 bus:
   region: 'us-west-2'
+  validation: True
   input:
     queue: 'https://sqs.us-west-2.amazonaws.com/...'
   output:
