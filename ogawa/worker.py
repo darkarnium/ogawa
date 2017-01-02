@@ -5,17 +5,25 @@ import requests
 
 from ogawa import config
 from ogawa import constant
-from ogawa import message
+from ogawa import scheme
 
 
 def run(configuration):
     ''' Long-polls messages from the queue and records them. '''
     config.validate(configuration)
-
     log = logging.getLogger(configuration['logging']['name'])
-    sqs = boto3.client('sqs', region_name=configuration['bus']['region'])
 
-    # Poll until the heat death of the universe.
+    # Ensure the configured scheme handler exists.
+    try:
+        scheme_handle = getattr(scheme, configuration['bus']['input']['scheme'])
+    except AttributeError as x:
+        log.error('Unable to load configured scheme handler {}: {}'.format(
+            configuration['bus']['input']['scheme'], x
+        ))
+        raise
+
+    # Setup SQS poller and poll until the heat death of the universe.
+    sqs = boto3.client('sqs', region_name=configuration['bus']['region'])
     log.info(
         'Starting long-poll loop for messages from {}'.format(
             configuration['bus']['input']['queue']
@@ -41,18 +49,21 @@ def run(configuration):
             mid = messages[i]['MessageId']
             handle = messages[i]['ReceiptHandle']
 
-            # 'Body' is JSON, which contains 'Message' which is also JSON.
+            # The 'Body' is JSON and contains a 'Message' that is also JSON.
             log.info('[{}] Processing message body'.format(mid))
             try:
                 body = json.loads(messages[i]['Body'])
                 work = json.loads(body['Message'])
 
-                # Validate the message, if configured.
+                # Validate the extracted message.
                 if configuration['bus']['validation']:
-                    message.validate_response(work)
+                    scheme_handle.validate(work)
             except (ValueError, AttributeError) as e:
                 log.warn('[{}] skipping malformed message: {}'.format(mid, e))
                 continue
+
+            # Apply transformations.
+            work = scheme_handle.transform(work)
 
             # Dispatch the result into ElasticSearch.
             try:

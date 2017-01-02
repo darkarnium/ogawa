@@ -13,5 +13,6 @@ bus:
   validation: True
   input:
     queue: 'https://sqs.us-west-2.amazonaws.com/...'
+    scheme: 'sample'
   output:
-    elasticsearch: 'http://127.0.0.1:9200/sesshu/capture/'
+    elasticsearch: 'http://127.0.0.1:9200/sample/capture/'

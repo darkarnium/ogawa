@@ -29,6 +29,7 @@ SCHEMA = {
             'input': {
                 'type': 'dict',
                 'schema': {
+                    'scheme': {'type': 'string'},
                     'queue': {'type': 'string'}
                 }
             },

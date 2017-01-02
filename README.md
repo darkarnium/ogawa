@@ -33,6 +33,14 @@ Currently, Ogawa assumes that `boto3` is able to enumerate credentials to access
 
 There is currently no ability to provide AWS access keys directly.
 
+## Schemes
+
+In order to allow for validation and transformation of application specific data, a `scheme` can be defined per acceptable input with relevant transformation and validation methods. These handlers will be invoked as part of regular Ogawa operation and ensure that application specific information is valid and transformed correctly.
+
+The `scheme` to use is specified on the bus `input` as part of configuration. The value provided should match the name of the Python module which contains the relevant mappings.
+
+See `ogawa/scheme/kako.py` for an example.
+
 ## Additional Reading
 
 A basic Chef environment cookbook for deploying and configuring Ogawa can be found at the following URL:
