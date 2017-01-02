@@ -24,4 +24,7 @@ def validate(message):
 def transform(message):
     ''' Apply any required transformations to input message. '''
     message['cap'] = base64.b64decode(message['cap'])
+    if not message['cap']:
+        message['cap'] = None
+
     return message
