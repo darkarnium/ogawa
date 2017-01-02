@@ -49,3 +49,6 @@ ENV/
 
 # OS X Bullshit.
 .DS_Store
+
+# Just in case.
+.aws/
