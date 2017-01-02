@@ -10,7 +10,6 @@ import multiprocessing
 
 from ogawa import worker
 from ogawa import config
-from ogawa import message
 from ogawa import constant
 
 
