@@ -39,7 +39,7 @@ In order to allow for validation and transformation of application specific data
 
 The `scheme` to use is specified on the bus `input` as part of configuration. The value provided should match the name of the Python module which contains the relevant mappings.
 
-See `ogawa/scheme/kako.py` for an example.
+See `ogawa/scheme/sample.py` for an example.
 
 ## Additional Reading
 
