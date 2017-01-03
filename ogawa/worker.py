@@ -71,6 +71,11 @@ def run(configuration):
                     configuration['bus']['output']['elasticsearch'],
                     json=work
                 )
+            except UnicodeDecodeError as x:
+                log.error(
+                    '[{}] Failed to encode capture: {}'.format(mid, x)
+                )
+                continue
             except requests.exceptions.HTTPError as x:
                 log.error(
                     '[{}] Failed to POST to ElasticSearch: {}'.format(mid, x)
