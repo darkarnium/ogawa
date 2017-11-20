@@ -7,8 +7,7 @@ SCHEMA = {
     'logging': {
         'type': 'dict',
         'schema': {
-            'path': {'type': 'string'},
-            'name': {'type': 'string'}
+            'path': {'type': 'string'}
         }
     },
     'workers': {

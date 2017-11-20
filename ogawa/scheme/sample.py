@@ -13,7 +13,7 @@ def validate(message):
     ''' Confirm the provided message matches the expected schema. '''
     linter = Validator(REQUEST_SCHEMA)
     if not linter.validate(message):
-        raise AttributeError(v.errors)
+        raise AttributeError(linter.errors)
 
 
 def transform(message):
