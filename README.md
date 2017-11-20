@@ -97,6 +97,8 @@ KAKO_INDEX
 curl -D - -X PUT -d @- http://127.0.0.1:9200/kako
 ```
 
+The above could then be used by setting the ElasticSearch output URL to `http://127.0.0.1:9200/kako/interaction/` inside of the Ogawa configuration.
+
 ## Additional Reading
 
 A basic Chef environment cookbook for deploying and configuring Ogawa can be found at the following URL:
