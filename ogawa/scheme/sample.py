@@ -1,3 +1,5 @@
+''' Implements an Example / Sample scheme for Ogawa. '''
+
 from cerberus import Validator
 
 # Cerberus compatible schema.
@@ -9,8 +11,8 @@ REQUEST_SCHEMA = {
 
 def validate(message):
     ''' Confirm the provided message matches the expected schema. '''
-    v = Validator(REQUEST_SCHEMA)
-    if not v.validate(message):
+    linter = Validator(REQUEST_SCHEMA)
+    if not linter.validate(message):
         raise AttributeError(v.errors)
 
 

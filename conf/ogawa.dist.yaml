@@ -8,6 +8,10 @@ workers:
     interval: 20
   count: 4
 
+monitoring:
+  enabled: True
+  interval: 60
+
 bus:
   region: 'us-west-2'
   validation: True

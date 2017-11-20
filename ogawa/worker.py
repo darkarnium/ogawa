@@ -1,10 +1,11 @@
+''' Implements the primary Ogawa ingestion worker. '''
+
+import logging
 import json
 import boto3
-import logging
 import requests
 
 from ogawa import config
-from ogawa import constant
 from ogawa import scheme
 
 
@@ -16,18 +17,19 @@ def run(configuration):
     # Ensure the configured scheme handler exists.
     try:
         scheme_handle = getattr(scheme, configuration['bus']['input']['scheme'])
-    except AttributeError as x:
-        log.error('Unable to load configured scheme handler {}: {}'.format(
-            configuration['bus']['input']['scheme'], x
-        ))
+    except AttributeError as err:
+        log.error(
+            'Unable to load configured scheme handler %s: %s',
+            configuration['bus']['input']['scheme'], err
+        )
         raise
 
-    # Setup SQS poller and poll until the heat death of the universe.
+    # Setup SQS poller and poll until the heat death of the universe. Or,
+    # y'know, until we crash / stop / restart.
     sqs = boto3.client('sqs', region_name=configuration['bus']['region'])
     log.info(
-        'Starting long-poll loop for messages from {}'.format(
-            configuration['bus']['input']['queue']
-        )
+        'Starting long-poll loop for messages from %s',
+        configuration['bus']['input']['queue']
     )
 
     while True:
@@ -44,13 +46,13 @@ def run(configuration):
 
         # Iterate over polled messages, validate objects, and dispatch to the
         # relevant module.
-        log.info('Got {} messages from the queue'.format(len(messages)))
+        log.info('Got %d messages from the queue', len(messages))
         for i in xrange(0, len(messages)):
             mid = messages[i]['MessageId']
             handle = messages[i]['ReceiptHandle']
 
             # The 'Body' is JSON and contains a 'Message' that is also JSON.
-            log.info('[{}] Processing message body'.format(mid))
+            log.info('[%s] Processing message body', mid)
             try:
                 body = json.loads(messages[i]['Body'])
                 work = json.loads(body['Message'])
@@ -58,8 +60,8 @@ def run(configuration):
                 # Validate the extracted message.
                 if configuration['bus']['validation']:
                     scheme_handle.validate(work)
-            except (ValueError, AttributeError) as e:
-                log.warn('[{}] skipping malformed message: {}'.format(mid, e))
+            except (ValueError, AttributeError) as err:
+                log.warn('[%s] skipping malformed message: %s', mid, err)
                 continue
 
             # Apply transformations.
@@ -67,23 +69,19 @@ def run(configuration):
 
             # Dispatch the result into ElasticSearch.
             try:
-                result = requests.post(
+                _ = requests.post(
                     configuration['bus']['output']['elasticsearch'],
                     json=work
                 )
-            except UnicodeDecodeError as x:
-                log.error(
-                    '[{}] Failed to encode capture: {}'.format(mid, x)
-                )
+            except UnicodeDecodeError as err:
+                log.error('[%s] Failed to encode capture: %s', mid, err)
                 continue
-            except requests.exceptions.HTTPError as x:
-                log.error(
-                    '[{}] Failed to POST to ElasticSearch: {}'.format(mid, x)
-                )
+            except requests.exceptions.HTTPError as err:
+                log.error('[%s] Failed to POST to ElasticSearch: %s', mid, err)
                 continue
 
             # Delete.
-            log.info('[{}] Message processed successfully'.format(mid))
+            log.info('[%s] Message processed successfully', mid)
             sqs.delete_message(
                 QueueUrl=configuration['bus']['input']['queue'],
                 ReceiptHandle=handle

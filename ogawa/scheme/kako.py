@@ -1,3 +1,5 @@
+''' Implements a Kako scheme for Ogawa. '''
+
 import base64
 from cerberus import Validator
 
@@ -18,15 +20,28 @@ REQUEST_SCHEMA = {
 
 def validate(message):
     ''' Confirm the provided message matches the expected schema. '''
-    v = Validator(REQUEST_SCHEMA)
-    if not v.validate(message):
-        raise AttributeError(v.errors)
+    linter = Validator(REQUEST_SCHEMA)
+    if not linter.validate(message):
+        raise AttributeError(linter.errors)
 
 
 def transform(message):
     ''' Apply any required transformations to input message. '''
-    message['capture'] = base64.b64decode(message['capture'])
-    if not message['capture']:
+    try:
+        decoded = base64.b64decode(message['capture'])
+    except TypeError as _:
+        return message
+
+    # Encode non-printable characters.
+    candidate = ''
+    for char in decoded:
+        candidate += char
+
+    # This seems odd, but we're replacing an empty string with None explicitly
+    # to prevent empty captures being recorded in ES.
+    if candidate is None:
         message['capture'] = None
+    else:
+        message['capture'] = candidate
 
     return message
