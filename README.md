@@ -76,6 +76,7 @@ cat <<KAKO_INDEX |
         "interaction": {
             "properties": {
                 "capture": {"type": "text"},
+                "capture_text": {"type": "text"},
                 "vulnerability": {"type": "text"},
                 "node": {"type": "text"},
                 "destination_ip": {"type": "text"},
@@ -83,7 +84,7 @@ cat <<KAKO_INDEX |
                 "source_ip": {"type": "text"},
                 "source_port": {"type": "integer"},
                 "simulation_name": {"type": "text"},
-                "simulation_version": {"type": "string"},
+                "simulation_version": {"type": "text"},
                 "timestamp": {
                     "type":   "date",
                     "format": "strict_date_optional_time||epoch_second"

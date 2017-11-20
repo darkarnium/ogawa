@@ -1,7 +1,9 @@
 ''' Implements a Kako scheme for Ogawa. '''
 
+import re
 import base64
 from cerberus import Validator
+
 
 # Cerberus compatible schema.
 REQUEST_SCHEMA = {
@@ -30,18 +32,17 @@ def transform(message):
     try:
         decoded = base64.b64decode(message['capture'])
     except TypeError as _:
+        message['capture_text'] = None
         return message
 
-    # Encode non-printable characters.
-    candidate = ''
-    for char in decoded:
-        candidate += char
-
-    # This seems odd, but we're replacing an empty string with None explicitly
-    # to prevent empty captures being recorded in ES.
-    if candidate is None:
-        message['capture'] = None
+    # Capture all printable characters and stash them inside a new field to
+    # allow for easy searching inside of ES.
+    candidate = re.findall("[\x00-\x7F]", decoded)
+    if candidate:
+        candidate = ''.join(candidate)
     else:
-        message['capture'] = candidate
+        candidate = None
 
+    # Bolt on the plain-text capture and go!
+    message['capture_txt'] = candidate
     return message
