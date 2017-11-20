@@ -11,8 +11,8 @@ from ogawa import scheme
 
 def run(configuration):
     ''' Long-polls messages from the queue and records them. '''
+    log = logging.getLogger(__name__)
     config.validate(configuration)
-    log = logging.getLogger(configuration['logging']['name'])
 
     # Ensure the configured scheme handler exists.
     try:
