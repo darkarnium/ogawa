@@ -3,14 +3,16 @@ from cerberus import Validator
 
 # Cerberus compatible schema.
 REQUEST_SCHEMA = {
-    'ts': {'type': 'integer'},
-    'cap': {'type': 'string'},
-    'vuln': {'type': 'string'},
+    'timestamp': {'type': 'integer'},
+    'capture': {'type': 'string'},
+    'vulnerability': {'type': 'string'},
     'node': {'type': 'string'},
-    'src_ip': {'type': 'string'},
-    'src_port': {'type': 'integer'},
-    'sim_name': {'type': 'string'},
-    'sim_version': {'type': 'string'}
+    'destination_ip': {'type': 'string'},
+    'destination_port': {'type': 'integer'},
+    'source_ip': {'type': 'string'},
+    'source_port': {'type': 'integer'},
+    'simulation_name': {'type': 'string'},
+    'simulation_version': {'type': 'string'}
 }
 
 
@@ -23,8 +25,8 @@ def validate(message):
 
 def transform(message):
     ''' Apply any required transformations to input message. '''
-    message['cap'] = base64.b64decode(message['cap'])
-    if not message['cap']:
-        message['cap'] = None
+    message['capture'] = base64.b64decode(message['capture'])
+    if not message['capture']:
+        message['capture'] = None
 
     return message
