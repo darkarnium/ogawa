@@ -1,6 +1,6 @@
 # Ogawa
 
-![Ogawa](docs/images/kako.png?raw=true)
+![Ogawa](docs/images/ogawa.png?raw=true)
 
 This project provides multi-process ElasticSearch ingestion for SQS Queues.
 
